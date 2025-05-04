@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Додати книгу</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-container { max-width: 500px; margin: 0 auto; }
+        input { width: 100%; padding: 10px; margin: 10px 0; }
+        button { padding: 10px; background: #333; color: white; border: none; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Додати нову книгу</h2>
+        <input type="text" id="title" placeholder="Назва книги">
+        <input type="text" id="author" placeholder="Автор">
+        <input type="number" id="year" placeholder="Рік видання">
+        <button onclick="submitBook()">Додати</button>
+    </div>
+
+    <script>
+        async function submitBook() {
+            const book = {
+                title: document.getElementById('title').value,
+                author: document.getElementById('author').value,
+                year: document.getElementById('year').value
+            };
+            await fetch('/add-book', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(book)
+            });
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>

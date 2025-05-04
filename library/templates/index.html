@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Онлайн-бібліотека</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        nav {
+            margin: 10px;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .book-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .book-card {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .book-card h3 {
+            margin: 0 0 10px;
+        }
+        .search-bar {
+            margin-bottom: 20px;
+        }
+        .search-bar input {
+            padding: 10px;
+            width: 100%;
+            max-width: 400px;
+        }
+        button {
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Онлайн-бібліотека</h1>
+    </header>
+    <nav>
+        <a href="/">Головна</a>
+        <a href="/add-book">Додати книгу</a>
+        <a href="/admin">Адмін-панель</a>
+    </nav>
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Пошук книг..." onkeyup="searchBooks()">
+        </div>
+        <div class="book-list" id="bookList">
+            <!-- Список книг буде додано через JavaScript або Django шаблон -->
+        </div>
+    </div>
+
+    <script>
+        function searchBooks() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let books = document.getElementsByClassName('book-card');
+            for (let i = 0; i < books.length; i++) {
+                let title = books[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+                if (title.includes(input)) {
+                    books[i].style.display = '';
+                } else {
+                    books[i].style.display = 'none';
+                }
+            }
+        }
+
+        // Завантаження книг через AJAX (якщо потрібно)
+        async function loadBooks() {
+            const response = await fetch('/api/books');
+            const books = await response.json();
+            const bookList = document.getElementById('bookList');
+            bookList.innerHTML = '';
+            books.forEach(book => {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                bookCard.innerHTML = `
+                    <h3>${book.title}</h3>
+                    <p>Автор: ${book.author}</p>
+                    <p>Рік: ${book.year}</p>
+                    <button onclick="window.location.href='/book/${book.id}'">Деталі</button>
+                `;
+                bookList.appendChild(bookCard);
+            });
+        }
+
+        window.onload = loadBooks;
+    </script>
+</body>
+</html>
